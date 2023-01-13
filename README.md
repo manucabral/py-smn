@@ -1,2 +1,2 @@
 # argentina-weather
-A free and simple weather API
+A free weather/forecast API wrapper from Argentina
