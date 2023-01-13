@@ -1,2 +1,2 @@
-# argentina-weather
-A free weather/forecast API wrapper from Argentina
+# pysmn
+A free and open source Python library for retrieving weather data from the National Meteorological Service of Argentina (SMN). 
