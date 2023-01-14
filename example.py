@@ -1,5 +1,4 @@
 import asyncio
-import os
 import smn
 
 async def main():
