@@ -5,9 +5,11 @@ import smn
 async def main():
     async with smn.Client() as client:
         forecast_now = await client.get(forecast='now')
-        weather_stations = forecast_now.filter(province='Buenos Aires', name='La Plata')
-        for weather_station in weather_stations:
-            print(weather_station.name, weather_station.weather['temp'])
+        province, lat, lon = await client.get_location()
+        # province is not used in this example, but it's a good idea to use it!
+        nearest = forecast_now.nearest(lat, lon)
+        print(nearest.name)
+        print(nearest.weather['temp'])
 
 if __name__ == '__main__':
     asyncio.run(main())
