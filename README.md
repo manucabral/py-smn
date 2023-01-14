@@ -4,7 +4,6 @@ A free and open source Python library for retrieving weather data from the Natio
 ## Usage
 ```py
 import asyncio
-import os
 import smn
 
 async def main():
