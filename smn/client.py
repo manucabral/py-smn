@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 import json
 
-from typing import List, Union
+from typing import List, Union, Tuple
 from .forecast import Forecast
 from .constants import SMNConstants
 
@@ -21,6 +21,14 @@ class Client:
         async with self.__session.get(endpoint) as response:
             return Forecast(await response.json())
     
+    async def get_location(self) -> Tuple[str, float, float]:
+        async with self.__session.get(SMNConstants.IP_API_ENDPOINT) as response:
+            data = await response.json()
+            if response.status != 200:
+                # TODO: Raise a custom exception :p
+                raise ValueError('Could not get location, exceeded the limit of requests.')
+            return data['regionName'], float(data['lat']), float(data['lon'])
+
     async def __aenter__(self) -> 'Client':
         return self
     
