@@ -1,6 +1,10 @@
 # py-smn
 A free and open source Python library for retrieving weather data from the National Meteorological Service of Argentina (SMN). 
 
+## Note
+This package offers two ways to obtain the requested data, the first is through the [API](https://ws.smn.gob.ar) of SMN and the second is by the public data offered by the official SMN [website](https://www.smn.gob.ar/descarga-de-datos). I recommend you use the second option since it is more accurate and is updated every day.
+
+
 ## Usage
 ```py
 import asyncio
