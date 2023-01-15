@@ -36,9 +36,20 @@ class Client:
         except asyncio.TimeoutError:
             raise LimitExceeded('Could not get forecast, exceeded the limit of requests.')
 
+    async def get_static(self, save: bool = True):
+        '''
+        Gets the static data from the SMN Open Data.
+
+        Args:
+            save (bool, optional): Saves the data to a JSON file. Defaults to True for better performance.
+        Returns:
+            OpenData: The static data.
+        '''
+        pass
+
     async def get(self, forecast: str = 'now') -> Union[Forecast, List[Forecast]]:
         '''
-        Gets the forecast for the given location.
+        Gets the forecast data from the SMN API.
 
         Args:
             forecast (str, optional): The forecast to get. Defaults to 'now'.
@@ -50,11 +61,11 @@ class Client:
         if forecast not in SMNConstants.AVAILABLE_FORECASTS:
             raise ForecastNotAvailable(f'The forecast "{forecast}" is not available.')
         if forecast == 'now':
-            endpoint = SMNConstants.WEATHER_ENDPOINT
+            endpoint = SMNConstants.API_ENDPOINT + 'weather'
         else:
-            endpoint = SMNConstants.FORECAST_ENDPOINT.format(days=forecast.split(' ')[0])
+            endpoint = SMNConstants.API_ENDPOINT + f'forecast/{forecast.split(" ")[0]}'
         return Forecast(await self.__get(endpoint))
-        
+
     async def get_location(self) -> Tuple[str, float, float]:
         '''
         Gets the location of the client. You can use this to get the nearest forecast.
@@ -62,7 +73,7 @@ class Client:
         Returns:
             Tuple[str, float, float]: The province, latitude and longitude of the client.
         '''
-        data = await self.__get(SMNConstants.IP_API_ENDPOINT)
+        data = await self.__get(SMNConstants.API_IP_ENDPOINT)
         return data['regionName'], float(data['lat']), float(data['lon'])
         
     async def __aenter__(self) -> 'Client':
