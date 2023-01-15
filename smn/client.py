@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+from zipfile import ZipFile
 from typing import List, Union, Tuple, Dict
 
 from .forecast import Forecast
@@ -19,12 +20,14 @@ class Client:
         '''
         self.__session = session or aiohttp.ClientSession()
     
-    async def __get(self, endpoint: str) -> Dict:
+    async def __get(self, endpoint: str, save: bool = False, format: str = '.txt') -> Dict:
         '''
         Makes a GET request to the given endpoint.
 
         Args:
             endpoint (str): The endpoint to make the request to.
+            save (bool, optional): Saves the data in a file. Defaults to False.
+            format (str, optional): The format of the file. Defaults to '.txt'.
         Raises:
             LimitExceeded: If the limit of requests per minute is exceeded.
         Returns:
@@ -32,11 +35,23 @@ class Client:
         '''
         try:
             async with self.__session.get(endpoint) as response:
+                if save and response.status == 200:
+                    filename = f'd{format}'
+                    with open(filename, 'wb') as output_file:
+                        async for chunk in response.content.iter_chunked(10):
+                            output_file.write(chunk)
+                    # If the format is '.zip', extracts only the first file.
+                    if format == '.zip':
+                        with ZipFile(filename) as zipfile:
+                            extracted_file = zipfile.namelist()[0]
+                            zipfile.extractall()
+                        return extracted_file
+                    return filename
                 return await response.json()
         except asyncio.TimeoutError:
             raise LimitExceeded('Could not get forecast, exceeded the limit of requests.')
 
-    async def get_static(self, save: bool = True):
+    async def get_static(self):
         '''
         Gets the static data from the SMN Open Data.
 
@@ -45,7 +60,11 @@ class Client:
         Returns:
             OpenData: The static data.
         '''
-        pass
+        endpoint = SMNConstants.STATIC_ENDPOINT + 'tiepre'
+        # NOTE: The data is in a zip file, set the format to '.zip'
+        # TODO: Parse the data to a forecast object!!
+        return await self.__get(endpoint, save=True, format='.zip')
+        
 
     async def get(self, forecast: str = 'now') -> Union[Forecast, List[Forecast]]:
         '''
