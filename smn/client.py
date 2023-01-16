@@ -6,6 +6,7 @@ from typing import List, Union, Tuple, Dict
 from .forecast import Forecast
 from .constants import SMNConstants
 from .exceptions import LimitExceeded, ForecastNotAvailable
+from .parser import Parser
 
 class Client:
     '''The client core class.'''
@@ -58,13 +59,16 @@ class Client:
         Args:
             save (bool, optional): Saves the data to a JSON file. Defaults to True for better performance.
         Returns:
-            OpenData: The static data.
+            Dict: The static data.
         '''
-        endpoint = SMNConstants.STATIC_ENDPOINT + 'tiepre'
         # NOTE: The data is in a zip file, set the format to '.zip'
-        # TODO: Parse the data to a forecast object!!
-        return await self.__get(endpoint, save=True, format='.zip')
-        
+        tf_filename = await self.__get(SMNConstants.STATIC_ENDPOINT + 'tiepre', save=True, format='.zip')
+        ws_filename = await self.__get(SMNConstants.STATIC_ENDPOINT + 'estaciones', save=True, format='.zip')
+        weather_stations = Parser.ws_to_json(filename=ws_filename)
+        weather_data = Parser.csv_to_json(filename=tf_filename)
+        if len(weather_data) == 0:
+            raise ForecastNotAvailable('No updated data available for today.')
+        return Forecast(Parser.merge_data(weather_stations, weather_data))
 
     async def get(self, forecast: str = 'now') -> Union[Forecast, List[Forecast]]:
         '''
