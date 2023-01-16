@@ -12,7 +12,7 @@ class Parser:
     @staticmethod
     def csv_to_json(filename: str) -> List[Dict]:
         '''Converts a CSV file to JSON.'''
-        with open(filename, 'r') as file:
+        with open(filename, 'r', errors='ignore') as file:
             lines = file.read().splitlines()
             weather_data = []
             for line in lines:
@@ -39,7 +39,7 @@ class Parser:
     @staticmethod
     def ws_to_json(filename: str) -> List[Dict]:
         '''Converts a Weather Station file to JSON.'''
-        with open(filename, 'r') as file:
+        with open(filename, 'r', errors='ignore') as file:
             lines = file.read().splitlines()
             lines = lines[2:] # remove header
             weather_stations = []
