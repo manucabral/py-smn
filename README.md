@@ -6,6 +6,23 @@ This package offers two ways to obtain the requested data, the first is through 
 
 
 ## Usage
+Using static (recommended method)
+```py
+import asyncio
+import smn
+
+async def main():
+    async with smn.Client() as client:
+        forecast_now = await client.get_static()
+        province, lat, lon = await client.get_location()
+        nearest_forecast = forecast_now.nearest(lat, lon)
+        print(nearest_forecast.weather['temp'])
+
+if __name__ == '__main__':
+    asyncio.run(main())
+```
+
+Using API
 ```py
 import asyncio
 import smn
