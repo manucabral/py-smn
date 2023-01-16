@@ -56,8 +56,6 @@ class Client:
         '''
         Gets the static data from the SMN Open Data.
 
-        Args:
-            save (bool, optional): Saves the data to a JSON file. Defaults to True for better performance.
         Returns:
             Dict: The static data.
         '''
@@ -67,7 +65,7 @@ class Client:
         weather_stations = Parser.ws_to_json(filename=ws_filename)
         weather_data = Parser.csv_to_json(filename=tf_filename)
         if len(weather_data) == 0:
-            raise ForecastNotAvailable('No updated data available for today.')
+            raise ForecastNotAvailable('No updated data available for today. Try again later.')
         return Forecast(Parser.merge_data(weather_stations, weather_data))
 
     async def get(self, forecast: str = 'now') -> Union[Forecast, List[Forecast]]:
