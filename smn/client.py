@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+import os
 from zipfile import ZipFile
 from typing import List, Union, Tuple, Dict
 
@@ -9,17 +10,19 @@ from .exceptions import LimitExceeded, ForecastNotAvailable
 from .parser import Parser
 
 class Client:
-    '''The client core class.'''
-    __slots__ = ('__session',)
+    '''
+    The client core class.
+    
+    Args:
+        session (aiohttp.ClientSession, optional): The session to use. Defaults to None.
+        keep_data (bool, optional): If the data should be kept. Defaults to False.
+    '''
+    __slots__ = ('__session', 'keep_data')
 
-    def __init__(self, session: aiohttp.ClientSession = None):
-        '''
-        Initializes the client instance.
-
-        Args:
-            session (aiohttp.ClientSession, optional): The session to use. Defaults to None.
-        '''
+    def __init__(self, session: aiohttp.ClientSession = None, keep_data: bool = False):
+        '''Initializes the client instance.'''
         self.__session = session or aiohttp.ClientSession()
+        self.keep_data = keep_data
     
     async def __get(self, endpoint: str, save: bool = False, format: str = '.txt') -> Dict:
         '''
@@ -106,6 +109,16 @@ class Client:
         '''
         return self
     
+    def __clear(self) -> None:
+        '''
+        Clear all the data downloaded.
+        '''
+        if self.keep_data:
+            return
+        for file in os.listdir():
+            if file.endswith('.txt') or file.endswith('.zip'):
+                os.remove(file)
+
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         '''
         Async context manager for the client.
@@ -116,6 +129,7 @@ class Client:
             exc_tb (Exception): The exception traceback.
         '''
         await self.__session.close()
+        self.__clear()
     
     def __del__(self) -> None:
         '''
