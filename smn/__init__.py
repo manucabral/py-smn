@@ -26,3 +26,8 @@ SOFTWARE.
 '''
 
 from .client import Client
+
+__version__ = '0.0.3'
+__author__ = 'Manuel Cabral'
+__license__ = 'MIT'
+__all__ = ['Client']
