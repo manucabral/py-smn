@@ -5,6 +5,19 @@ A free and open source Python library for retrieving weather data from the Natio
 This package offers two ways to obtain the requested data, the first is through the [API](https://ws.smn.gob.ar) of SMN and the second is by the public data offered by the official SMN [website](https://www.smn.gob.ar/descarga-de-datos). I recommend you use the second option since it is more accurate and is updated every day.
 
 
+## Installation
+From PyPI
+```bash
+pip install py-smn
+```
+From source code clone it
+```bash
+git clone https://github.com/manucabral/py-smn.git
+cd py-smn
+python -m pip install -r requirements.txt
+```
+
+
 ## Usage
 Using static (recommended method)
 ```py
