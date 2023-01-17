@@ -52,12 +52,12 @@ class Client:
         except asyncio.TimeoutError:
             raise LimitExceeded('Could not get forecast, exceeded the limit of requests.')
 
-    async def get_static(self):
+    async def get_static(self) -> Forecast:
         '''
         Gets the static data from the SMN Open Data.
 
         Returns:
-            Dict: The static data.
+            Forecast: The forecast with the static data.
         '''
         # NOTE: The data is in a zip file, set the format to '.zip'
         tf_filename = await self.__get(SMNConstants.STATIC_ENDPOINT + 'tiepre', save=True, format='.zip')
@@ -141,4 +141,3 @@ class Client:
             str: The string representation of the client.
         '''
         return self.__repr__()
-    
