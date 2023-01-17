@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='py-smn',
-    version='0.0.3',
+    version='0.1.0',
     description='A Python wrapper for the SMN API Argentina',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
