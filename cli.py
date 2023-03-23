@@ -9,14 +9,30 @@ from asyncio import run
 from argparse import ArgumentParser
 from smn import Client
 
-async def get_province(province: str, name: str) -> None:
+async def cli_get_province(province: str, name: str) -> any:
+    '''
+        Get the weather station from a province and print the temperature.
+
+        Args:
+            province (str): Province to get data from.
+            name (str): Name of the city to get data from.
+        
+        Returns:
+            any (weather station)
+    '''
     async with Client() as client:
         fcast_now = await client.get(forecast="now")
         weather_stations = fcast_now.filter(province=province, name=name)
         for station in weather_stations:
             print(station.name, station.weather['temp'])
 
-async def get_nearest_weather() -> None:
+async def cli_get_nearest_weather() -> any:
+    '''
+        Get the nearest weather station to the client and print the temperature.
+
+        Returns:
+            any (weather station)
+    '''
     async with Client() as client:
         fcast_now = await client.get(forecast="now")
         province, lat, lon = await client.get_location()
@@ -44,6 +60,6 @@ def get_arguments() -> ArgumentParser:
 if __name__ == "__main__":
     args = get_arguments()
     if args.province: 
-        run(get_province(args.province, args.name))
+        run(cli_get_province(args.province, args.name))
     elif args.nearest: 
-        run(get_nearest_weather())
+        run(cli_get_nearest_weather())
